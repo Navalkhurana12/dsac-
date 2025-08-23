@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>IoT Inventory Dashboard</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f0f4f8;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    .category-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 20px;
+    }
+    .category-box {
+      background: white;
+      border-radius: 10px;
+      padding: 20px;
+      text-align: center;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+    .category-box:hover {
+      transform: scale(1.03);
+      background: #e0ecff;
+    }
+    .item-list {
+      display: none;
+      margin-top: 30px;
+    }
+    .item {
+      background: #fff;
+      display: flex;
+      align-items: center;
+      margin-bottom: 15px;
+      padding: 10px;
+      border-radius: 8px;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.1);
+    }
+    .item img {
+      width: 80px;
+      height: 80px;
+      object-fit: cover;
+      border-radius: 8px;
+      margin-right: 15px;
+    }
+    .item-info {
+      flex-grow: 1;
+    }
+    .item-controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .btn {
+      padding: 5px 10px;
+      border: none;
+      background: #007bff;
+      color: white;
+      font-weight: bold;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .btn:disabled {
+      background: #ccc;
+    }
+  </style>
+</head>
+<body>
+
+<h1>IoT Inventory Management</h1>
+
+<div class="category-container">
+  <div class="category-box" onclick="showItems('Microcontroller')">Microcontroller</div>
+  <div class="category-box" onclick="showItems('Sensor')">Sensor</div>
+  <div class="category-box" onclick="showItems('Actuator')">Actuator</div>
+  <div class="category-box" onclick="showItems('Display')">Display</div>
+  <div class="category-box" onclick="showItems('Miscellaneous')">Miscellaneous</div>
+</div>
+
+<div class="item-list" id="itemList"></div>
+
+<script>
+  const inventory = {
+    Microcontroller: [
+      { name: 'Arduino Uno', image: 'https://upload.wikimedia.org/wikipedia/commons/3/38/Arduino_Uno_-_R3.jpg', count: 0 },
+      { name: 'ESP32', image: 'https://upload.wikimedia.org/wikipedia/commons/5/55/ESP32-DevKitC.jpg', count: 0 }
+    ],
+    Sensor: [
+      { name: 'Temperature Sensor (DHT11)', image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/DHT11_temperature_humidity_sensor.jpg/320px-DHT11_temperature_humidity_sensor.jpg', count: 0 },
+      { name: 'Ultrasonic Sensor', image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/85/Ultrasonic_sensor_-_HC-SR04.jpg/320px-Ultrasonic_sensor_-_HC-SR04.jpg', count: 0 }
+    ],
+    Actuator: [
+      { name: 'Servo Motor', image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c0/Servo_Motor.jpg/320px-Servo_Motor.jpg', count: 0 },
+      { name: 'Relay Module', image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d2/Relay_Module.jpg/320px-Relay_Module.jpg', count: 0 }
+    ],
+    Display: [
+      { name: '16x2 LCD', image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/db/16x2_LCD_Module.jpg/320px-16x2_LCD_Module.jpg', count: 0 },
+      { name: 'OLED Display', image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e2/OLED_Display.jpg/320px-OLED_Display.jpg', count: 0 }
+    ],
+    Miscellaneous: [
+      { name: 'Breadboard', image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/00/Breadboard.jpg/320px-Breadboard.jpg', count: 0 },
+      { name: 'Jumper Wires', image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/be/Jumper_wires.jpg/320px-Jumper_wires.jpg', count: 0 }
+    ]
+  };
+
+  function showItems(category) {
+    const items = inventory[category];
+    const container = document.getElementById('itemList');
+    container.innerHTML = `<h2>${category} Items</h2>`;
+    items.forEach((item, index) => {
+      container.innerHTML += `
+        <div class="item">
+          <img src="${item.image}" alt="${item.name}">
+          <div class="item-info">
+            <strong>${item.name}</strong><br>
+            Quantity: <span id="${category}_${index}_count">${item.count}</span>
+          </div>
+          <div class="item-controls">
+            <button class="btn" onclick="decrement('${category}', ${index})">−</button>
+            <button class="btn" onclick="increment('${category}', ${index})">+</button>
+          </div>
+        </div>
+      `;
+    });
+    container.style.display = 'block';
+  }
+
+  function increment(category, index) {
+    inventory[category][index].count++;
+    document.getElementById(`${category}_${index}_count`).innerText = inventory[category][index].count;
+  }
+
+  function decrement(category, index) {
+    if (inventory[category][index].count > 0) {
+      inventory[category][index].count--;
+      document.getElementById(`${category}_${index}_count`).innerText = inventory[category][index].count;
+    }
+  }
+</script>
+
+</body>
+</html>
