@@ -37,3 +37,4 @@ int main()
   cin >> l >> r;
   cout << getmax(0, 0, n - 1, l, r);
 }
+// size is 4*n 
